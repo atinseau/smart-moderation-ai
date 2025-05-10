@@ -1,10 +1,10 @@
-import { Plateform, prisma, User } from "@smart-moderation-ai/db";
+import { PlatformEnum, prisma, User } from "@smart-moderation-ai/db";
 import { CryptoService } from "../../../services/crypto.service";
 import { FacebookService } from "./facebook.service";
 
 
-export abstract class FacebookAuthService {
-  static async storeToken(user: User, token: string) {
+export abstract class FacebookConnectionService {
+  static async createConnection(user: User, token: string) {
 
     const facebookService = new FacebookService(token)
     if (!await facebookService.me()) {
@@ -13,15 +13,15 @@ export abstract class FacebookAuthService {
 
     const encryptedToken = await CryptoService.encrypt(token, Bun.env.TOKEN_PRIVATE_KEY)
     const [_, newToken] = await prisma.$transaction([
-      prisma.token.deleteMany({
+      prisma.platformConnection.deleteMany({
         where: {
-          platform: Plateform.FACEBOOK,
+          platform: PlatformEnum.FACEBOOK,
         }
       }),
-      prisma.token.create({
+      prisma.platformConnection.create({
         data: {
           userId: user.id,
-          platform: Plateform.FACEBOOK,
+          platform: PlatformEnum.FACEBOOK,
           token: encryptedToken.toString('hex')
         }
       })

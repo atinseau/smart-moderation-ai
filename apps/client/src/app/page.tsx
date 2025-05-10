@@ -8,7 +8,7 @@ export default async function Home() {
   const session = await auth()
 
   return (<div>
-    {!session ? <SignIn/> : <SignOut/>}
+    {!session ? <SignIn /> : <SignOut />}
     <Link href="/me">Me</Link>
   </div>);
 }

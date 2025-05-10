@@ -2,7 +2,12 @@ const permissions = [
   "pages_show_list",
   "instagram_basic",
   "instagram_manage_comments",
-  "email"
+  "email",
+  "instagram_content_publish",
+  "instagram_manage_insights",
+  "pages_read_engagement",
+  "business_management",
+  "pages_manage_posts"
 ]
 
 export function getFacebookAuthUrl() {
@@ -16,6 +21,7 @@ export function getFacebookAuthUrl() {
   url += `&client_id=${process.env.FACEBOOK_APP_ID}`
   url += `&redirect_uri=${encodeURIComponent(process.env.CLIENT_REDIRECT_URL)}`
   url += `&auth_type=rerequest`
+  url += `&extras={"setup":{"channel":"IG_API_ONBOARDING"}}`
   url += `&scope=${encodeURIComponent(permissions.join(","))}`
 
   return url

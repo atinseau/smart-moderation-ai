@@ -1,10 +1,12 @@
-model Token {
-  id       String    @id @default(cuid())
-  platform Plateform
+model PlatformConnection {
+  id       String       @id @default(cuid())
+  platform PlatformEnum
   token    String
 
   userId String
   user   User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  metadata Json @default("{}")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

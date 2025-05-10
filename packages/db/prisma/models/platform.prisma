@@ -1,0 +1,15 @@
+enum PlatformEnum {
+  FACEBOOK
+}
+
+model Platform {
+  id   String       @id @default(cuid())
+  name PlatformEnum
+
+  description String?
+  label       String?
+  icon        String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -1,15 +1,29 @@
 'use client';
 
+import { FACEBOOK_CONNECTION_FAILURE, FACEBOOK_CONNECTION_SUCCESS } from "@/lib/constants/facebook-popup-event";
 import { useEffect } from "react";
 
-export function FacebookAuthButtonWrapper({ children }: Readonly<{ children: React.ReactNode }>) {
+type FacebookAuthButtonWrapperProps = Readonly<{
+  children: React.ReactNode
+}>
+
+export function FacebookAuthButtonWrapper({ children }: FacebookAuthButtonWrapperProps) {
   useEffect(() => {
     function handleMessage(event: MessageEvent) {
-      if (event.origin !== window.location.origin) return;
-      if (event.data === "facebook-token-stored") {
-        console.log("Token stored successfully");
-      } else if (event.data === "facebook-token-error") {
-        console.log("Error storing token");
+      try {
+        if (event.origin !== window.location.origin) return;
+
+        if (typeof event.data === "string") {
+          const data = JSON.parse(event.data)
+
+          if (data.name === FACEBOOK_CONNECTION_SUCCESS) {
+            console.log('Facebook connection success:', data);
+          } else if (data.name === FACEBOOK_CONNECTION_FAILURE) {
+            console.error('Facebook connection error:', data.data.message);
+          }
+        }
+      } catch (e) {
+        console.error('Error handling message from Facebook:', e);
       }
     }
     window.addEventListener('message', handleMessage);
