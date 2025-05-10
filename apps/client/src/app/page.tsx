@@ -1,8 +1,14 @@
-import { LinkPopup } from "@/components/LinkPopup";
-import { getFacebookAuthUrl } from "@/lib/functions/getFacebookAuthUrl.server";
+import { auth } from "@/auth";
+import { SignIn } from "@/components/SignIn";
+import { SignOut } from "@/components/SignOut";
+import Link from "next/link";
 
 export default async function Home() {
+
+  const session = await auth()
+
   return (<div>
-    <LinkPopup url={getFacebookAuthUrl()}>Facebook oauth</LinkPopup>
+    {!session ? <SignIn/> : <SignOut/>}
+    <Link href="/me">Me</Link>
   </div>);
 }
