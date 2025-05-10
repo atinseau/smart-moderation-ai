@@ -1,4 +1,3 @@
-import Link from "next/link";
 import "../styles/globals.css";
 
 export default function RootLayout({
@@ -8,11 +7,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="dark">
         {children}
-        <div className="pt-8">
-          <Link href="/">home</Link>
-        </div>
       </body>
     </html>
   );

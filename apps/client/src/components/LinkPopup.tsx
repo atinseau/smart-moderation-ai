@@ -2,6 +2,7 @@
 
 import { openPopupUrl } from "@/lib/functions/openPopupUrl.client";
 import { useEffect } from "react";
+import { Button } from "./ui/button";
 
 type LinkPopupProps = Readonly<{
   children: React.ReactNode;
@@ -10,7 +11,7 @@ type LinkPopupProps = Readonly<{
 }>
 
 export function LinkPopup(props: LinkPopupProps) {
-  return <button onClick={() => openPopupUrl(props.url, props.title)}>
+  return <Button className="cursor-pointer" onClick={() => openPopupUrl(props.url, props.title)}>
     {props.children}
-  </button>
+  </Button>
 }
