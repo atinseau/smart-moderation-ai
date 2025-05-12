@@ -1,3 +1,5 @@
+'use client';
+
 import { ACCESS_TOKEN_KEY } from "../constants/local-storage";
 
 export function getAccessToken() {

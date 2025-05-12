@@ -1,34 +1,37 @@
-import { prisma } from "@smart-moderation-ai/db";
+import { Platform, prisma } from "@smart-moderation-ai/db";
 import { CryptoService } from "../../../services/crypto.service";
 
 
 export abstract class PlatformService {
 
-  static async getConnectedPlatforms(userId: string) {
-    const platformConnections = await prisma.platformConnection.findMany({
-      where: {
-        userId
-      }
-    })
-    return Promise.all(platformConnections.map(async (platformConnection) => {
-      const buffer = Buffer.from(platformConnection.token, 'hex')
-      const decryptedToken = await CryptoService.decrypt(buffer, Bun.env.TOKEN_PRIVATE_KEY)
-
-      return {
-        name: platformConnection.platform,
-        createdAt: platformConnection.createdAt,
-        token: decryptedToken.toString(),
-      }
-    }))
-  }
-
-  static async getAvailablePlatforms() {
-    const platforms = await prisma.platform.findMany()
-    return platforms.map((platform) => ({
+  private static formatPlatform(platform: Platform) {
+    return {
+      id: platform.id,
       name: platform.name,
       description: platform.description,
       label: platform.label,
-    }))
+      isConnected: false
+    }
+  }
+
+  static async getPlatforms(userId?: string) {
+    const platforms = await prisma.platform.findMany()
+
+    if (userId) {
+      const platformConnection = await prisma.platformConnection.findMany({
+        where: {
+          userId,
+        },
+      })
+
+      const connectedPlatforms = platformConnection.map((connection) => connection.platform)
+      return platforms.map((platform) => ({
+        ...this.formatPlatform(platform),
+        isConnected: connectedPlatforms.includes(platform.name),
+      }))
+    }
+
+    return platforms.map(this.formatPlatform)
   }
 
 }

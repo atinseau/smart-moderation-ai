@@ -1,12 +1,10 @@
 import { auth } from "@/auth"
+import { api } from "@/lib/instances/api"
 // import { FacebookAuthButton } from "@/components/FacebookAuthButton/FacebookAuthButton"
 // import { api } from "@/lib/instances/api"
 
 export default async function Home() {
   const session = await auth()
-
-  // const { data: availablePlatforms } = await api.get('/platform/available')
-  // const { data: connectedPlatforms } = await api.get('/platform/connected')
 
   return <div>
     <p>{session?.user?.name}</p>

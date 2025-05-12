@@ -6,6 +6,11 @@
   "scripts": {
     "dev": "bun run --watch src/index.ts"
   },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts"
+    }
+  },
   "dependencies": {
     "@auth/core": "^0.39.1",
     "@elysiajs/cors": "^1.3.1",

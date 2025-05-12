@@ -6,5 +6,5 @@ export function openPopupUrl(
   width: number = 600,
   height: number = 600
 ) {
-  window.open(url, title, `popup,width=${width},height=${height}`);
+  return window.open(url, title, `popup,width=${width},height=${height}`);
 }

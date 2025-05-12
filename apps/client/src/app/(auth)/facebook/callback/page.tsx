@@ -10,14 +10,22 @@ export default function Home() {
     async function sendToken() {
       const searchParams = new URLSearchParams(window.location.hash)
       const facebookToken = searchParams.get('#access_token')
-      api.post('/facebook/connection', { token: facebookToken })
-        .then(() => postMessage(FACEBOOK_CONNECTION_SUCCESS))
-        .catch((e) => postMessage(FACEBOOK_CONNECTION_FAILURE, e))
-        .finally(() => window.close())
+
+      if (!facebookToken) {
+        postMessage(FACEBOOK_CONNECTION_FAILURE, { message: "No Facebook token" })
+        return
+      }
+
+      const { data, error } = await api.facebook.connection.post({ token: facebookToken })
+      if (error) {
+        postMessage(FACEBOOK_CONNECTION_FAILURE, { message: error.value.message || "Unknown error" })
+        return
+      }
+      postMessage(FACEBOOK_CONNECTION_SUCCESS, data)
     }
 
     sendToken()
   }, [])
 
-  return <p>FACEBOOK CALLBACK</p>
+  return null
 }
