@@ -17,7 +17,8 @@
     "@smart-moderation-ai/db": "workspace:*",
     "axios": "^1.9.0",
     "elysia": "latest",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "rabbitmq-client": "^5.0.4"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.9",

@@ -1,13 +1,11 @@
 import axios, { AxiosInstance } from "axios";
-import { FacebookMeResponse } from "../types/facebook-me.response.type";
+import { MetaMeResponse } from "../types/meta-me.response.type";
 
+export class MetaService {
 
+  protected readonly api: AxiosInstance
 
-export class FacebookService {
-
-  private readonly api: AxiosInstance
-
-  constructor(token: string) {
+  constructor(protected token: string) {
     this.api = axios.create({
       baseURL: "https://graph.facebook.com/v22.0",
       params: {
@@ -19,7 +17,7 @@ export class FacebookService {
 
   async me() {
     try {
-      const response = await this.api.get<FacebookMeResponse>('/me', {
+      const response = await this.api.get<MetaMeResponse>('/me', {
         params: {
           fields: ['email', 'name'].join(',')
         }

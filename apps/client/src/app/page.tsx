@@ -8,10 +8,11 @@ export default async function Home() {
 
   const session = await auth()
 
-  return (<div>
+  return (<div className="flex gap-2 p-2">
     {!session ? <SignIn /> : <SignOut />}
-    <Button>
-      <Link href="/me">Me</Link>
-    </Button>
+    {session
+      ? <Button>
+        <Link href="/me">Me</Link>
+      </Button> : null}
   </div>);
 }

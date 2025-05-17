@@ -1,4 +1,5 @@
-import { signOut } from "@/auth.ts"
+import { signOut } from "@/auth"
+import { Button } from "./ui/button"
 
 export function SignOut() {
   return (
@@ -8,7 +9,7 @@ export function SignOut() {
         await signOut()
       }}
     >
-      <button type="submit">Sign out</button>
+      <Button variant="secondary" type="submit">Sign out</Button>
     </form>
   )
 }

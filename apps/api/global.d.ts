@@ -3,5 +3,8 @@ declare module "bun" {
     PORT: string;
     TOKEN_PRIVATE_KEY: string
     AUTH_SECRET: string
+    RABBITMQ_DEFAULT_USER: string
+    RABBITMQ_DEFAULT_PASS: string
+    REDIS_URL: string
   }
 }

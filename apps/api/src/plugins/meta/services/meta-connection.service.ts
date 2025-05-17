@@ -1,27 +1,27 @@
 import { PlatformEnum, prisma, User } from "@smart-moderation-ai/db";
 import { CryptoService } from "../../../services/crypto.service";
-import { FacebookService } from "./facebook.service";
+import { MetaService } from "./meta.service";
 
 
-export abstract class FacebookConnectionService {
+export abstract class MetaConnectionService {
   static async createConnection(user: User, token: string) {
 
-    const facebookService = new FacebookService(token)
-    if (!await facebookService.me()) {
-      throw new Error('Invalid facebook token')
+    const metaService = new MetaService(token)
+    if (!await metaService.me()) {
+      throw new Error('Invalid meta token')
     }
 
     const encryptedToken = await CryptoService.encrypt(token, Bun.env.TOKEN_PRIVATE_KEY)
     const [_, newToken] = await prisma.$transaction([
       prisma.platformConnection.deleteMany({
         where: {
-          platform: PlatformEnum.FACEBOOK,
+          platform: PlatformEnum.META,
         }
       }),
       prisma.platformConnection.create({
         data: {
           userId: user.id,
-          platform: PlatformEnum.FACEBOOK,
+          platform: PlatformEnum.META,
           token: encryptedToken.toString('hex')
         }
       })

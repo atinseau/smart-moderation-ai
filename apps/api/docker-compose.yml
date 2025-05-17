@@ -1,0 +1,37 @@
+services:
+  rabbitmq:
+    image: rabbitmq:latest
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    env_file:
+      - .env
+    configs:
+      - source: rabbitmq-plugins
+        target: /etc/rabbitmq/enabled_plugins
+    volumes:
+      - rabbitmq-lib:/var/lib/rabbitmq/
+      - rabbitmq-log:/var/log/rabbitmq
+  dragonfly:
+    image: "docker.dragonflydb.io/dragonflydb/dragonfly"
+    ulimits:
+      memlock: -1
+    ports:
+      - "6379:6379"
+    # For better performance, consider `host` mode instead `port` to avoid docker NAT.
+    # `host` mode is NOT currently supported in Swarm Mode.
+    # https://docs.docker.com/compose/compose-file/compose-file-v3/#network_mode
+    # network_mode: "host"
+    volumes:
+      - dragonflydata:/data
+
+configs:
+  rabbitmq-plugins:
+    content: "[rabbitmq_management]."
+
+volumes:
+  rabbitmq-lib:
+  rabbitmq-log:
+  dragonflydata:

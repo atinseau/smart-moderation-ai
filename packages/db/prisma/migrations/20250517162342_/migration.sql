@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "PlatformEnum" AS ENUM ('FACEBOOK');
+CREATE TYPE "PlatformEnum" AS ENUM ('META');
 
 -- CreateTable
 CREATE TABLE "Account" (
@@ -26,6 +26,7 @@ CREATE TABLE "PlatformConnection" (
     "platform" "PlatformEnum" NOT NULL,
     "token" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
+    "metadata" JSONB NOT NULL DEFAULT '{}',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

@@ -1,11 +1,13 @@
 import { Elysia } from "elysia";
 import { cors } from '@elysiajs/cors'
 
-import facebookPlugin from "./plugins/facebook";
+import metaPlugin from "./plugins/meta";
 import userPlugin from "./plugins/user";
 import authPlugin from "./plugins/auth";
 import errorPlugin from "./plugins/error";
 import platformPlugin from "./plugins/platform";
+import contentsPlugin from "./plugins/contents";
+import { QueueService } from "./services/queue.service";
 
 const application = new Elysia()
   .use(cors())
@@ -13,9 +15,10 @@ const application = new Elysia()
   .get("/", () => "Hello Elysia")
   .use(authPlugin)
   // After authPlugin, every plugin will be protected by the auth
-  .use(facebookPlugin)
+  .use(metaPlugin)
   .use(userPlugin)
   .use(platformPlugin)
+  .use(contentsPlugin)
   .listen(Bun.env.PORT);
 
 console.log(
@@ -23,3 +26,8 @@ console.log(
 );
 
 export type Application = typeof application;
+
+
+QueueService.connect().then(() => {
+
+})

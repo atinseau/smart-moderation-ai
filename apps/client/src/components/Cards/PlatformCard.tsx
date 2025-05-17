@@ -9,13 +9,15 @@ type PlatformCardProps = {
   isConnected?: boolean
   children?: React.ReactNode // Configure button
   onConfigure?: () => void
+  imageSrc: string
+  imageAlt: string
 }
 
 export function PlatformCard(props: PlatformCardProps) {
   return <Card className="gap-3">
     <CardHeader>
       <div className="flex">
-        <Image src="/img/facebook-logo.png" alt="Facebook logo" width={40} height={40} />
+        <Image src={props.imageSrc} alt={props.imageAlt} width={40} height={40} />
         <div className="ml-auto">
           {props.isConnected ? <Badge>Connected</Badge> : <Badge variant="secondary">Not connected</Badge>}
         </div>

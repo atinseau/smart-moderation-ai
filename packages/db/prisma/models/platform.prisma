@@ -1,5 +1,5 @@
 enum PlatformEnum {
-  FACEBOOK
+  META
 }
 
 model Platform {
@@ -8,7 +8,6 @@ model Platform {
 
   description String?
   label       String?
-  icon        String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

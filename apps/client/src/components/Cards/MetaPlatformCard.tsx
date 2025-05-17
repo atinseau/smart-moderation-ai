@@ -2,20 +2,20 @@
 
 import { PlatformCard } from "./PlatformCard";
 import { openPopupUrl } from "@/lib/functions/openPopupUrl.client";
-import { getFacebookAuthUrl } from "@/lib/functions/getFacebookAuthUrl.client";
-import { FACEBOOK_CONNECTION_FAILURE, FACEBOOK_CONNECTION_SUCCESS } from "@/lib/constants/facebook-popup-event";
+import { getMetaAuthUrl } from "@/lib/functions/getMetaAuthUrl.client";
+import { META_CONNECTION_FAILURE, META_CONNECTION_SUCCESS } from "@/lib/constants/meta-popup-event";
 import { useEffect, useRef, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-type FacebookPlatformCardProps = Readonly<{
+type MetaPlatformCardProps = Readonly<{
   isConnected: boolean;
   id: string;
-  name: "FACEBOOK";
+  name: "META";
   description: string | null;
   label: string | null;
 }>
 
-export function FacebookPlatformCard(props: FacebookPlatformCardProps) {
+export function MetaPlatformCard(props: MetaPlatformCardProps) {
 
   const router = useRouter()
   const [_, startTransition] = useTransition()
@@ -37,24 +37,21 @@ export function FacebookPlatformCard(props: FacebookPlatformCardProps) {
         popupRef.current?.close()
 
 
-        if (data.name === FACEBOOK_CONNECTION_SUCCESS) {
-          console.log('Facebook connection success');
+        if (data.name === META_CONNECTION_SUCCESS) {
+          console.log('Meta connection success');
           startTransition(() => router.refresh())
-        } else if (data.name === FACEBOOK_CONNECTION_FAILURE) {
-          console.error('Facebook connection error:', data.data.message);
+        } else if (data.name === META_CONNECTION_FAILURE) {
+          console.error('Meta connection error:', data.data.message);
         }
       }
     } catch (e) {
-      console.error('Error handling message from Facebook:', e);
+      console.error('Error handling message from Meta:', e);
     }
   }
 
   const handleConfigure = () => {
-    const facebookAuthUrl = getFacebookAuthUrl();
-
-    // const facebookAuthUrl = "http://localhost:3000/facebook/callback"
-
-    popupRef.current = openPopupUrl(facebookAuthUrl, "Facebook connection")
+    const metaAuthUrl = getMetaAuthUrl();
+    popupRef.current = openPopupUrl(metaAuthUrl, "Meta connection")
     if (!popupRef.current) {
       console.error('Popup blocked or failed to open');
       return
@@ -85,5 +82,7 @@ export function FacebookPlatformCard(props: FacebookPlatformCardProps) {
     title={props.label || props.name}
     isConnected={props.isConnected}
     onConfigure={handleConfigure}
+    imageSrc="/img/meta-logo.webp"
+    imageAlt="Meta logo"
   />
 }

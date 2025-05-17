@@ -1,0 +1,17 @@
+
+
+
+model Content {
+  id          String @id @default(cuid())
+
+  externalId  String
+  externalCreatedAt DateTime
+
+  metadata    Json
+
+  title       String
+  platform    PlatformEnum
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

@@ -5,9 +5,9 @@ async function main() {
   await prisma.platform.createMany({
     data: [
       {
-        name: 'FACEBOOK',
-        description: 'Connect to facebook and get every post from your wall',
-        label: 'Facebook',
+        name: 'META',
+        description: 'Connect to meta and get every post from your wall on facebook and instagram',
+        label: 'Meta',
       }
     ]
   })

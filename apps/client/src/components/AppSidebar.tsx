@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-import { Home, PlugZap } from "lucide-react"
+import { Home, PlugZap, RssIcon } from "lucide-react"
 import Link from "next/link"
 
 // Menu items.
@@ -19,6 +19,11 @@ const items = [
     title: "Home",
     url: "/me",
     icon: Home,
+  },
+  {
+    title: "Contents",
+    url: "/contents",
+    icon: RssIcon,
   },
   {
     title: "Platforms",
