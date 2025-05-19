@@ -1,4 +1,4 @@
-import { Connection } from "rabbitmq-client"
+import { AsyncMessage, Connection } from "rabbitmq-client"
 
 export abstract class QueueService {
 
@@ -23,12 +23,14 @@ export abstract class QueueService {
     })
   }
 
-  static async createConsumer(queue: string) {
-
+  static createConsumer(queue: string, cb: (message: AsyncMessage) => void) {
+    return this.connection.createConsumer({
+      queue,
+    }, cb)
   }
 
-  static async createProducer(queue: string) {
-
+  static createPublisher() {
+    return this.connection.createPublisher()
   }
 
 }

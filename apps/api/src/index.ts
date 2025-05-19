@@ -26,8 +26,3 @@ console.log(
 );
 
 export type Application = typeof application;
-
-
-QueueService.connect().then(() => {
-
-})

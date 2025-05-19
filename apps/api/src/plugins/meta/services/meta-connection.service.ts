@@ -12,7 +12,7 @@ export abstract class MetaConnectionService {
     }
 
     const encryptedToken = await CryptoService.encrypt(token, Bun.env.TOKEN_PRIVATE_KEY)
-    const [_, newToken] = await prisma.$transaction([
+    const [_, platformConnection] = await prisma.$transaction([
       prisma.platformConnection.deleteMany({
         where: {
           platform: PlatformEnum.META,
@@ -26,6 +26,6 @@ export abstract class MetaConnectionService {
         }
       })
     ])
-    return newToken
+    return platformConnection
   }
 }
