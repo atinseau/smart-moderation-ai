@@ -26,11 +26,14 @@ export abstract class PlatformService {
         },
       })
 
-      const connectedPlatforms = platformConnection.map((connection) => connection.platform)
-      return platforms.map((platform) => ({
-        ...this.formatPlatform(platform),
-        isConnected: connectedPlatforms.includes(platform.name),
-      }))
+      return platforms.map((platform) => {
+        const connectedPlatform = platformConnection.find((connection) => connection.platform === platform.name)
+        return {
+          ...this.formatPlatform(platform),
+          isConnected: !!connectedPlatform,
+          expiresAt: connectedPlatform?.expiresAt || null,
+        }
+      })
     }
 
     return platforms.map(this.formatPlatform)
@@ -54,10 +57,10 @@ export abstract class PlatformService {
         platform: platformName
       }
     })
-
     if (!platformConnection) {
       throw new Error("Platform connection not found")
     }
+    return this.decryptPlatformToken(platformConnection.token)
   }
 
   static async getPlatformToken(platformConnection: PlatformConnection) {

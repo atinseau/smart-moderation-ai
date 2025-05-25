@@ -1,6 +1,12 @@
 -- CreateEnum
 CREATE TYPE "PlatformEnum" AS ENUM ('META');
 
+-- CreateEnum
+CREATE TYPE "TaskStatus" AS ENUM ('PENDING', 'IN_PROGRESS', 'COMPLETED', 'FAILED');
+
+-- CreateEnum
+CREATE TYPE "TaskType" AS ENUM ('FETCH_CONTENT');
+
 -- CreateTable
 CREATE TABLE "Account" (
     "userId" TEXT NOT NULL,
@@ -18,6 +24,20 @@ CREATE TABLE "Account" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Account_pkey" PRIMARY KEY ("provider","providerAccountId")
+);
+
+-- CreateTable
+CREATE TABLE "Content" (
+    "id" TEXT NOT NULL,
+    "externalId" TEXT NOT NULL,
+    "externalCreatedAt" TIMESTAMP(3) NOT NULL,
+    "metadata" JSONB NOT NULL,
+    "title" TEXT NOT NULL,
+    "platform" "PlatformEnum" NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Content_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -39,7 +59,6 @@ CREATE TABLE "Platform" (
     "name" "PlatformEnum" NOT NULL,
     "description" TEXT,
     "label" TEXT,
-    "icon" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -53,6 +72,17 @@ CREATE TABLE "Session" (
     "expires" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "Task" (
+    "id" TEXT NOT NULL,
+    "status" "TaskStatus" NOT NULL,
+    "type" "TaskType" NOT NULL,
+    "userId" TEXT NOT NULL,
+    "metadata" JSONB NOT NULL,
+
+    CONSTRAINT "Task_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -91,3 +121,6 @@ ALTER TABLE "PlatformConnection" ADD CONSTRAINT "PlatformConnection_userId_fkey"
 
 -- AddForeignKey
 ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Task" ADD CONSTRAINT "Task_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

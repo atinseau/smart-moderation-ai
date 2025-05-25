@@ -1,6 +1,7 @@
 import { PlatformEnum, prisma, User } from "@smart-moderation-ai/db";
 import { CryptoService } from "../../../services/crypto.service";
 import { MetaService } from "./meta.service";
+import { DEFAULT_META_TOKEN_EXPIRATION } from "../constants";
 
 
 export abstract class MetaConnectionService {
@@ -11,7 +12,12 @@ export abstract class MetaConnectionService {
       throw new Error('Invalid meta token')
     }
 
-    const encryptedToken = await CryptoService.encrypt(token, Bun.env.TOKEN_PRIVATE_KEY)
+    const longLivedToken = await metaService.getLongLivedToken()
+    if (!longLivedToken) {
+      throw new Error('Failed to get long lived token from Meta')
+    }
+
+    const encryptedToken = await CryptoService.encrypt(longLivedToken.access_token, Bun.env.TOKEN_PRIVATE_KEY)
     const [_, platformConnection] = await prisma.$transaction([
       prisma.platformConnection.deleteMany({
         where: {
@@ -22,7 +28,9 @@ export abstract class MetaConnectionService {
         data: {
           userId: user.id,
           platform: PlatformEnum.META,
-          token: encryptedToken.toString('hex')
+          token: encryptedToken.toString('hex'),
+          // expires_in is in seconds, convert to milliseconds
+          expiresAt: new Date(Date.now() + (longLivedToken?.expires_in || DEFAULT_META_TOKEN_EXPIRATION) * 1000),
         }
       })
     ])

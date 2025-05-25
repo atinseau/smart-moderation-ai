@@ -1,7 +1,6 @@
-import { AsyncMessage, Connection, ConsumerProps } from "rabbitmq-client"
+import { Connection } from "rabbitmq-client"
 
 export abstract class QueueService {
-
   static connection: Connection
 
   static async connect() {
@@ -12,7 +11,6 @@ export abstract class QueueService {
     this.connection = new Connection({
       username: Bun.env.RABBITMQ_DEFAULT_USER,
       password: Bun.env.RABBITMQ_DEFAULT_PASS,
-      hostname: 'localhost'
     })
 
     return new Promise((resolve, reject) => {
@@ -23,12 +21,13 @@ export abstract class QueueService {
     })
   }
 
-  static createConsumer(props: ConsumerProps, cb: (message: AsyncMessage) => void) {
-    return this.connection.createConsumer(props, cb)
+  static createConsumer = async (...args: Parameters<typeof Connection.prototype.createConsumer>) => {
+    await this.connect()
+    return this.connection.createConsumer(...args)
   }
 
-  static createPublisher() {
-    return this.connection.createPublisher()
+  static createPublisher = async (...args: Parameters<typeof Connection.prototype.createPublisher>) => {
+    await this.connect()
+    return this.connection.createPublisher(...args)
   }
-
 }

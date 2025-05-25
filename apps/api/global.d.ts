@@ -6,5 +6,7 @@ declare module "bun" {
     RABBITMQ_DEFAULT_USER: string
     RABBITMQ_DEFAULT_PASS: string
     REDIS_URL: string
+    META_APP_ID: string
+    META_APP_SECRET: string
   }
 }

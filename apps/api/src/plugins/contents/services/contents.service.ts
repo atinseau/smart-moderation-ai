@@ -1,46 +1,59 @@
-import { ContentFetching, ContentFetchingStatus, prisma } from "@smart-moderation-ai/db";
-import { InstagramService } from "../../meta/services/instagram.service";
+import { prisma, PlatformConnection, Task, TaskStatus, TaskType } from "@smart-moderation-ai/db";
 import { PlatformService } from "../../platform/services/platform.service";
 
 export abstract class ContentsService {
 
   static async getContents(userId: string) {
-    const platformConnections = await PlatformService.getPlatformConnections(userId)
-
-    const contentFetchings: ContentFetching[] = []
-
     const now = performance.now()
+    const platformConnection = await PlatformService.getPlatformConnections(userId)
+
+    const tasks: Task[] = []
 
     const contents = await prisma.$transaction(async (tx) => {
-      for (const platformConnection of platformConnections) {
-        let contentFetching = await tx.contentFetching.findFirst({
-          where: {
-            platform: platformConnection.platform,
-          }
-        })
-
-        // If no content fetching exists, create one to start content fetching
-        if (!contentFetching) {
-          contentFetching = await tx.contentFetching.create({
-            data: {
-              platform: platformConnection.platform,
-              status: ContentFetchingStatus.PENDING,
-              userId
+      tasks.push(...await tx.task.findMany({
+        where: {
+          type: TaskType.FETCH_CONTENT,
+          userId,
+          OR: platformConnection.map((connection) => ({
+            metadata: {
+              path: ['platform'],
+              equals: connection.platform
             }
-          })
+          }))
         }
-        contentFetchings.push(contentFetching)
-      }
+      }))
 
+      // Create missing tasks for each platform connection
+      for (const connection of platformConnection) {
+        if (this.isConnectionTaskExist(connection, tasks)) {
+          tasks.push(await tx.task.create({
+            data: {
+              type: TaskType.FETCH_CONTENT,
+              status: TaskStatus.PENDING,
+              userId,
+              metadata: {
+                platform: connection.platform
+              }
+            }
+          }))
+        }
+      }
       return tx.content.findMany()
     })
 
     console.log(`Content fetching took ${performance.now() - now}ms`)
 
     return {
-      contentFetchings,
+      tasks,
       contents
     }
+  }
+
+  private static isConnectionTaskExist(connection: PlatformConnection, tasks: Task[]) {
+    return !tasks.some((task) => {
+      const metadata = task.metadata as { platform: string };
+      return metadata?.platform === connection.platform;
+    });
   }
 
 }

@@ -13,6 +13,7 @@ type MetaPlatformCardProps = Readonly<{
   name: "META";
   description: string | null;
   label: string | null;
+  expiresAt?: string | null;
 }>
 
 export function MetaPlatformCard(props: MetaPlatformCardProps) {
@@ -82,6 +83,7 @@ export function MetaPlatformCard(props: MetaPlatformCardProps) {
     title={props.label || props.name}
     isConnected={props.isConnected}
     onConfigure={handleConfigure}
+    expiresAt={props.expiresAt}
     imageSrc="/img/meta-logo.webp"
     imageAlt="Meta logo"
   />

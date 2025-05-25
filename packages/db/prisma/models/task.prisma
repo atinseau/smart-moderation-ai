@@ -1,0 +1,23 @@
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
+
+enum TaskType {
+  FETCH_CONTENT
+}
+
+model Task {
+  id     String     @id @default(cuid())
+  status TaskStatus
+  type   TaskType
+  userId String
+  user   User       @relation(fields: [userId], references: [id])
+
+  createdAt  DateTime  @default(now())
+  executedAt DateTime?
+
+  metadata Json
+}

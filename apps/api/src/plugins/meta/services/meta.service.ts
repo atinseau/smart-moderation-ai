@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { MetaMeResponse } from "../types/meta-me.response.type";
+import { MetaLongLivedToken } from "../types/meta-long-lived-token.type";
 
 export class MetaService {
 
@@ -24,7 +25,27 @@ export class MetaService {
       })
       return response.data
     } catch (e) {
+      console.error("Error fetching user data from Meta:", e);
       return null
+    }
+  }
+
+  async getLongLivedToken() {
+    try {
+      const response = await this.api.get<MetaLongLivedToken>('/oauth/access_token', {
+        params: {
+          access_token: null,
+          grant_type: 'fb_exchange_token',
+          client_id: Bun.env.META_APP_ID,
+          client_secret: Bun.env.META_APP_SECRET,
+          fb_exchange_token: this.token
+        }
+      })
+
+      return response.data
+    } catch (e) {
+      console.error("Error getting long lived token:", e);
+      return null;
     }
   }
 
