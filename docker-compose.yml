@@ -1,0 +1,4 @@
+name: smart-moderation-ai
+include:
+  - ./apps/api/docker-compose.yml
+  - ./packages/db/docker-compose.yml

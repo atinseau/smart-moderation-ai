@@ -7,7 +7,6 @@ import authPlugin from "./plugins/auth";
 import errorPlugin from "./plugins/error";
 import platformPlugin from "./plugins/platform";
 import contentsPlugin from "./plugins/contents";
-import { QueueService } from "./services/queue.service";
 
 const application = new Elysia()
   .use(cors())
