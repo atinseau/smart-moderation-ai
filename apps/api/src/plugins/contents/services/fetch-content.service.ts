@@ -118,6 +118,7 @@ export abstract class FetchContentService {
           platform: PlatformEnum.META,
           metadata: {
             type: 'instagram',
+            shortcode: post.shortcode
           }
         })) as Prisma.ContentCreateManyInput[]
       }),
@@ -126,6 +127,7 @@ export abstract class FetchContentService {
           id: taskId
         },
         data: {
+          status: nextPageId === null ? 'COMPLETED' : 'IN_PROGRESS',
           metadata: {
             ...metadata,
             lastPageId: nextPageId

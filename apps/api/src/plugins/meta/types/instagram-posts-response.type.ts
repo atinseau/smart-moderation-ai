@@ -5,6 +5,7 @@ export type InstagramPostsResponse = {
     id: string
     media_url: string
     caption?: string
+    shortcode: string
     timestamp: string
   }[]
   paging: {

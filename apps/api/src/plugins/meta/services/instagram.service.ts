@@ -35,7 +35,8 @@ export class InstagramService extends MetaService {
           fields: [
             'caption',
             'media_url',
-            'timestamp'
+            'timestamp',
+            'shortcode'
           ].join(',')
         }
       })
@@ -84,7 +85,7 @@ export class InstagramService extends MetaService {
       // If there is a next page, call the onNextPage callback with the next page id
       await hooks?.onNextPage?.(nextPageId);
 
-      await sleep(10000)
+      await sleep(2000)
     }
 
     console.log('Finished fetching posts from Instagram', posts.length);

@@ -8,6 +8,7 @@ import errorPlugin from "./plugins/error";
 import platformPlugin from "./plugins/platform";
 import contentsPlugin from "./plugins/contents";
 import cronPlugin from "./plugins/cron"
+import { sleep } from "bun";
 
 const application = new Elysia()
   .use(cors())
@@ -15,11 +16,40 @@ const application = new Elysia()
   .use(cronPlugin)
   .get("/", () => "Hello Elysia")
   .use(authPlugin)
+  .ws('/ws', {
+    async upgrade(context) {
+      console.log(context)
+      await sleep(20000)
+
+      return Promise.resolve()
+    },
+    transform(context) {
+      console.log(context)
+    },
+    beforeHandle(context) {
+      console.log(context)
+    },
+    drain(context) {
+      console.log(context)
+    },
+    open: (ws) => {
+      console.log('🚀 ~ open:', ws.id);
+    },
+    message: (ws) => {
+      console.log('🚀 ~ message:', ws.id);
+    },
+    close: (ws) => {
+      console.log('🚀 ~ close:', ws.id);
+    },
+    error: (c) => {
+      console.log('error');
+    },
+  })
   // After authPlugin, every plugin will be protected by the auth
   .use(metaPlugin)
+  .use(contentsPlugin)
   .use(userPlugin)
   .use(platformPlugin)
-  .use(contentsPlugin)
   .listen(Bun.env.PORT);
 
 console.log(

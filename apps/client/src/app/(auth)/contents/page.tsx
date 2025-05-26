@@ -15,12 +15,14 @@ import {
   Facebook,
   Youtube,
   Linkedin,
+  RssIcon,
 } from "lucide-react"
 
 import Image from "next/image"
 import { StatisticCard } from "@/components/Cards/StatisticCard"
-import { ContentCard } from "@/components/Cards/ContentCard"
+import { ContentCard } from "@/components/Cards/ContentCard/ContentCard"
 import { api } from "@/lib/instances/api"
+import { DisplayContentInProgressTasks } from "./_components/DisplayContentInProgressTasks"
 
 // Types basés sur votre modèle Prisma
 type PlatformEnum = "INSTAGRAM" | "TWITTER" | "FACEBOOK" | "YOUTUBE" | "LINKEDIN" | "TIKTOK"
@@ -43,24 +45,6 @@ interface Content {
   updatedAt: Date
 }
 
-// function getPlatformIcon(platform: PlatformEnum) {
-//   const iconProps = { className: "h-4 w-4" }
-
-//   switch (platform) {
-//     case "INSTAGRAM":
-//       return <Instagram {...iconProps} />
-//     case "TWITTER":
-//       return <Twitter {...iconProps} />
-//     case "FACEBOOK":
-//       return <Facebook {...iconProps} />
-//     case "YOUTUBE":
-//       return <Youtube {...iconProps} />
-//     case "LINKEDIN":
-//       return <Linkedin {...iconProps} />
-//     default:
-//       return <ExternalLink {...iconProps} />
-//   }
-// }
 
 // function getPlatformColor(platform: PlatformEnum) {
 //   switch (platform) {
@@ -83,22 +67,23 @@ export default async function ContentsPage() {
 
   const { data } = await api.contents.get()
 
-  console.log(data)
+  // console.log(data)
 
   return (
     <div className="flex-1 space-y-6 p-6">
       {/* Header avec titre et actions */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Contents</h1>
           <p className="text-muted-foreground">Gérez tous vos contenus de réseaux sociaux en un seul endroit</p>
+          <DisplayContentInProgressTasks tasks={data?.tasks || []} />
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline" size="sm">
             <Filter className="h-4 w-4 mr-2" />
             Filtres
           </Button>
-          <Button size="sm">Nouveau contenu</Button>
+          <Button size="sm">Activer la modération intelligente</Button>
         </div>
       </div>
 
@@ -108,7 +93,7 @@ export default async function ContentsPage() {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input placeholder="Rechercher dans les contenus..." className="pl-10" />
         </div>
-        <Select defaultValue="all">
+        {/* <Select defaultValue="all">
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Plateforme" />
           </SelectTrigger>
@@ -130,20 +115,26 @@ export default async function ContentsPage() {
             <SelectItem value="oldest">Plus ancien</SelectItem>
             <SelectItem value="platform">Plateforme</SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
       </div>
 
       {/* Statistiques rapides */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <StatisticCard />
-        <StatisticCard />
-        <StatisticCard />
-        <StatisticCard />
+      <div className="grid gap-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
+        <StatisticCard
+          title="Total contents"
+          className="bg-blue-100"
+          value={10}
+        >
+          <RssIcon className="size-4 text-blue-600" />
+        </StatisticCard>
       </div>
 
       {/* Grille de contenus */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <ContentCard />
+        {/* {data?.contents.map((content) => <ContentCard
+          key={content.id}
+          content={content}
+        />)} */}
       </div>
 
       {/* Pagination */}

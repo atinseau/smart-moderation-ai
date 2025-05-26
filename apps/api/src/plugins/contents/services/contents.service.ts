@@ -44,7 +44,7 @@ export abstract class ContentsService {
     console.log(`Content fetching took ${performance.now() - now}ms`)
 
     return {
-      tasks,
+      tasks: tasks.filter((task) => task.status !== "COMPLETED"),
       contents
     }
   }

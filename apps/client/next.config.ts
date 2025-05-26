@@ -8,6 +8,18 @@ const env = dotenv.config({
 
 dotenvExpand.expand(env)
 
-const nextConfig: NextConfig = {};
+const nextConfig: NextConfig = {
+  transpilePackages: [
+    '@elysiajs/eden'
+  ],
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '*.cdninstagram.com'
+      }
+    ]
+  }
+};
 
 export default nextConfig;
