@@ -1,12 +1,17 @@
 {
   "name": "@smart-moderation-ai/root",
   "version": "0.0.1",
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "turbo run dev --parallel"
+    "postinstall": "bun --filter=@smart-moderation-ai/db generate",
+    "dev": "turbo run dev --parallel",
+    "fclean": "rm -rf node_modules .turbo apps/client/.next bun.lock packages/db/dist"
   },
   "packageManager": "bun@1.2.10",
   "devDependencies": {
-    "turbo": "^2.5.3"
+    "turbo": "^2.5.4"
   }
 }

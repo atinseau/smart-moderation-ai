@@ -19,7 +19,7 @@ export function getMetaAuthUrl() {
   url += `&client_id=${process.env.NEXT_PUBLIC_META_APP_ID}`
   url += `&redirect_uri=${encodeURIComponent(process.env.NEXT_PUBLIC_CLIENT_REDIRECT_URL)}`
   url += `&auth_type=rerequest`
-  url += `&extras={"setup":{"channel":"IG_API_ONBOARDING"}}`
+  // url += `&extras={"setup":{"channel":"IG_API_ONBOARDING"}}`
   url += `&scope=${encodeURIComponent(permissions.join(","))}`
 
   return url

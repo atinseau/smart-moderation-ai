@@ -2,6 +2,11 @@
   "name": "@smart-moderation-ai/db",
   "version": "0.0.1",
   "description": "Database module for Smart Moderation AI",
+  "scripts": {
+    "dev": "prisma studio",
+    "generate": "prisma generate",
+    "migrate:dev": "prisma migrate dev"
+  },
   "exports": {
     ".": "./src/index.ts",
     "./env": "./.env"

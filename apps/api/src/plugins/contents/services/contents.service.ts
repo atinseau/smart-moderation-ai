@@ -14,12 +14,14 @@ export abstract class ContentsService {
         where: {
           type: TaskType.FETCH_CONTENT,
           userId,
-          OR: platformConnection.map((connection) => ({
-            metadata: {
-              path: ['platform'],
-              equals: connection.platform
-            }
-          }))
+          AND: {
+            OR: platformConnection.map((connection) => ({
+              metadata: {
+                path: ['platform'],
+                equals: connection.platform
+              }
+            }))
+          }
         }
       }))
 

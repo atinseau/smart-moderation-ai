@@ -1,6 +1,6 @@
-import axios, { AxiosInstance } from "axios";
-import { MetaMeResponse } from "../types/meta-me.response.type";
+import axios, { AxiosError, AxiosInstance } from "axios";
 import { MetaLongLivedToken } from "../types/meta-long-lived-token.type";
+import { MetaMeResponse } from "../types/meta-me-response.type";
 
 export class MetaService {
 
@@ -44,7 +44,7 @@ export class MetaService {
 
       return response.data
     } catch (e) {
-      console.error("Error getting long lived token:", e);
+      console.log("Error fetching long-lived token from Meta:", e);
       return null;
     }
   }

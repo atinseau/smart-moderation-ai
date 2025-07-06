@@ -29,9 +29,11 @@ CREATE TABLE "Account" (
 -- CreateTable
 CREATE TABLE "Content" (
     "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "externalId" TEXT NOT NULL,
     "externalCreatedAt" TIMESTAMP(3) NOT NULL,
     "metadata" JSONB NOT NULL,
+    "imageUrl" TEXT,
     "title" TEXT NOT NULL,
     "platform" "PlatformEnum" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -49,6 +51,7 @@ CREATE TABLE "PlatformConnection" (
     "metadata" JSONB NOT NULL DEFAULT '{}',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "PlatformConnection_pkey" PRIMARY KEY ("id")
 );
@@ -80,6 +83,8 @@ CREATE TABLE "Task" (
     "status" "TaskStatus" NOT NULL,
     "type" "TaskType" NOT NULL,
     "userId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "executedAt" TIMESTAMP(3),
     "metadata" JSONB NOT NULL,
 
     CONSTRAINT "Task_pkey" PRIMARY KEY ("id")
@@ -108,6 +113,9 @@ CREATE TABLE "VerificationToken" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Content_externalId_key" ON "Content"("externalId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Session_sessionToken_key" ON "Session"("sessionToken");
 
 -- CreateIndex
@@ -115,6 +123,9 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Content" ADD CONSTRAINT "Content_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "PlatformConnection" ADD CONSTRAINT "PlatformConnection_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

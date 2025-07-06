@@ -13,9 +13,9 @@ type DisplayContentInProgressTasksProps = {
 export function DisplayContentInProgressTasks({ tasks }: DisplayContentInProgressTasksProps) {
 
   useEffect(() => {
-    if (!tasks.length) {
-      return
-    }
+    // if (!tasks.length) {
+    //   return
+    // }
 
 
     const subscription = api.ws.subscribe()
