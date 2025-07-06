@@ -1,5 +1,5 @@
 import { Platform, PlatformConnection, PlatformEnum, prisma } from "@smart-moderation-ai/db";
-import { CryptoService } from "../../../services/crypto.service";
+import { CryptoService } from "../../../core/services/crypto.service";
 
 
 export abstract class PlatformService {

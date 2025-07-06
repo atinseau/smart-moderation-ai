@@ -7,6 +7,7 @@
   ],
   "scripts": {
     "postinstall": "bun --filter=@smart-moderation-ai/db generate",
+    "predev": "docker compose up -d",
     "dev": "turbo run dev --parallel",
     "fclean": "rm -rf node_modules .turbo apps/client/.next bun.lock packages/db/dist"
   },

@@ -1,6 +1,7 @@
 import { Elysia } from "elysia";
 import { cors } from '@elysiajs/cors'
 
+// Importing plugins
 import metaPlugin from "./plugins/meta";
 import userPlugin from "./plugins/user";
 import authPlugin from "./plugins/auth";
@@ -10,7 +11,7 @@ import contentsPlugin from "./plugins/contents";
 import cronPlugin from "./plugins/cron"
 import wsPlugin from "./plugins/ws"
 
-const application = new Elysia()
+export const app = new Elysia()
   .use(cors())
   .use(errorPlugin)
   .use(cronPlugin)
@@ -25,7 +26,8 @@ const application = new Elysia()
   .listen(Bun.env.PORT);
 
 console.log(
-  `🦊 Elysia is running at http://${application.server?.hostname}:${application.server?.port}`
+  `🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`
 );
 
-export type Application = typeof application;
+export type * from "./export"
+export type Application = typeof app;

@@ -1,5 +1,5 @@
 import { PlatformEnum, Prisma, prisma } from "@smart-moderation-ai/db";
-import { QueueService } from "../../../services/queue.service";
+import { QueueService } from "@/services/queue.service";
 import { InstagramService } from "../../meta/services/instagram.service";
 import { PlatformService } from "../../platform/services/platform.service";
 
@@ -19,7 +19,7 @@ export abstract class FetchContentService {
   */
   static async startHydration(taskId: string, userId: string, platform: PlatformEnum) {
     if (!Bun.isMainThread) {
-      throw new Error("FetchContentService can only be used on the main thread.");
+      throw new Error("FetchContentService.startHydration can only be used on the main thread.");
     }
 
     const publisher = await QueueService.createPublisher({
@@ -60,11 +60,14 @@ export abstract class FetchContentService {
           if ('type' in event.data && event.data.type === 'ready') {
             console.log("Fetch content worker is ready");
             worker.postMessage({ type: 'start' })
-            worker.onmessage = null // Remove the initial message handler
             this.worker = worker;
             clearTimeout(initializationTimeout);
             return
           }
+
+          if ('type' in event.data && event.data.type === 'hydration-completed') {
+          }
+
           throw new Error("Unexpected message from fetch content worker: " + JSON.stringify(event.data));
         }
       }
@@ -127,7 +130,6 @@ export abstract class FetchContentService {
           id: taskId
         },
         data: {
-          status: nextPageId === null ? 'COMPLETED' : 'IN_PROGRESS',
           metadata: {
             ...metadata,
             lastPageId: nextPageId

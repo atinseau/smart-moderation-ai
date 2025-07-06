@@ -1,5 +1,5 @@
 import { PlatformEnum, prisma, User } from "@smart-moderation-ai/db";
-import { CryptoService } from "../../../services/crypto.service";
+import { CryptoService } from "../../../core/services/crypto.service";
 import { MetaService } from "./meta.service";
 import { DEFAULT_META_TOKEN_EXPIRATION } from "../constants";
 

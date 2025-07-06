@@ -25,7 +25,9 @@ export abstract class AuthService {
       }
 
       return user
-    } catch { }
+    } catch (e) {
+      console.error(e)
+    }
 
     return null
   }

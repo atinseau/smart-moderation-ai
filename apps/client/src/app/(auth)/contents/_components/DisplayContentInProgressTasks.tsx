@@ -1,10 +1,10 @@
 'use client';
 
 import { Spinner } from "@/components/Spinner";
-import { getAccessToken } from "@/lib/functions/getAccessToken.client";
+import { useSocket } from "@/hooks/use-socket";
 import { api } from "@/lib/instances/api";
 import { Task } from "@smart-moderation-ai/db"
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type DisplayContentInProgressTasksProps = {
   tasks: Task[]
@@ -12,34 +12,18 @@ type DisplayContentInProgressTasksProps = {
 
 export function DisplayContentInProgressTasks({ tasks }: DisplayContentInProgressTasksProps) {
 
+  const { isOpen, emit, once } = useSocket()
+  const [isLoading, setIsLoading] = useState(tasks.length > 0)
+
   useEffect(() => {
-    // if (!tasks.length) {
-    //   return
-    // }
-
-
-    const subscription = api.ws.subscribe()
-
-    // console.log(subscription)
-
-    subscription.on('message', (message) => {
-      console.log(message)
-    })
-
-    subscription.on('open', (message) => {
-      subscription.send('coucou')
-      console.log(message)
-    })
-
-    return () => {
-      subscription.close()
+    if (!isOpen) {
+      return
     }
-  }, [])
+  }, [isOpen])
 
-  if (!tasks.length) {
-    return null
+  if (isLoading) {
+    return <Spinner className="text-muted-foreground mt-2" label="Content is being processed..." />
   }
 
-  return <Spinner className="text-muted-foreground mt-2" label="Content is being processed..." />
-
+  return false
 }
