@@ -1,19 +1,18 @@
 import { treaty } from '@elysiajs/eden'
 import type { Application } from "@smart-moderation-ai/api"
-import { getAccessToken } from "../functions/getAccessToken.client";
-import { getSessionToken } from "../functions/getSessionToken.server";
+import { getAccessToken as getClientAccessToken } from '../functions/getAccessToken.client'
+import { getAccessToken as getServerAccessToken } from '../functions/getAccessToken.server'
+import { SESSION_COOKIE_NAME } from '@smart-moderation-ai/shared'
 
 export const api = treaty<Application>(process.env.NEXT_PUBLIC_API_URL, {
   async onRequest() {
-    const accessToken = typeof window !== "undefined"
-      ? getAccessToken()
-      : await getSessionToken()
+    const token = typeof window !== 'undefined'
+      ? getClientAccessToken()
+      : await getServerAccessToken()
 
-    if (accessToken) {
-      return {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+    return {
+      headers: {
+        'Cookie': `${SESSION_COOKIE_NAME}=${token}`
       }
     }
   }

@@ -1,5 +1,6 @@
 import { decode } from "@auth/core/jwt"
 import { prisma } from "@smart-moderation-ai/db"
+import { SESSION_COOKIE_NAME } from "@smart-moderation-ai/shared"
 
 export abstract class AuthService {
 
@@ -10,7 +11,7 @@ export abstract class AuthService {
     try {
       const jwt = await decode({
         token,
-        salt: "authjs.session-token",
+        salt: SESSION_COOKIE_NAME,
         secret: Bun.env.AUTH_SECRET,
       })
 

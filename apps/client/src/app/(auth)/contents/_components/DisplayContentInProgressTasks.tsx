@@ -2,7 +2,6 @@
 
 import { Spinner } from "@/components/Spinner";
 import { useSocket } from "@/hooks/use-socket";
-import { api } from "@/lib/instances/api";
 import { Task } from "@smart-moderation-ai/db"
 import { useEffect, useState } from "react";
 
@@ -12,13 +11,18 @@ type DisplayContentInProgressTasksProps = {
 
 export function DisplayContentInProgressTasks({ tasks }: DisplayContentInProgressTasksProps) {
 
-  const { isOpen, emit, once } = useSocket()
+  const { isOpen, emit, once, on } = useSocket()
   const [isLoading, setIsLoading] = useState(tasks.length > 0)
 
   useEffect(() => {
     if (!isOpen) {
       return
     }
+
+    on("coucou", () => {
+      console.log('message')
+    })
+
   }, [isOpen])
 
   if (isLoading) {

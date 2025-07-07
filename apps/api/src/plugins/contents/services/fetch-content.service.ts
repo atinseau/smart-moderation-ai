@@ -1,7 +1,10 @@
-import { PlatformEnum, Prisma, prisma } from "@smart-moderation-ai/db";
+import { PlatformEnum } from "@smart-moderation-ai/db";
 import { QueueService } from "@/services/queue.service";
-import { InstagramService } from "../../meta/services/instagram.service";
 import { PlatformService } from "../../platform/services/platform.service";
+import { InstagramFetchingContent } from "./instagram-fetching-content.service";
+import { FetchingContent } from "../classes/fetching-content.class";
+import { EmitterService } from "@/services/emitter.service";
+import { EventEnum } from "@/enums/event.enum";
 
 export abstract class FetchContentService {
 
@@ -66,6 +69,8 @@ export abstract class FetchContentService {
           }
 
           if ('type' in event.data && event.data.type === 'hydration-completed') {
+            EmitterService.emit(EventEnum.HYDRATION_COMPLETED, { taskId: event.data.taskId, userId: event.data.userId })
+            return
           }
 
           throw new Error("Unexpected message from fetch content worker: " + JSON.stringify(event.data));
@@ -87,55 +92,18 @@ export abstract class FetchContentService {
     }
 
     const token = await PlatformService.getPlatformTokenByName(userId, platform);
+    let fetchingContent: FetchingContent;
 
     switch (platform) {
       case "META":
-        return this.fetchInstagramContent(taskId, userId, token);
+        fetchingContent = new InstagramFetchingContent(token);
+        break;
       default:
         throw new Error(`Unsupported platform: ${platform}`);
     }
+
+    return fetchingContent.fetchContent(taskId, userId)
   }
 
-  static async fetchInstagramContent(taskId: string, userId: string, token: string) {
-    const instagramService = new InstagramService(token)
 
-    const task = await prisma.task.findFirst({ where: { id: taskId } })
-    if (!task) {
-      throw new Error(`Task with id ${taskId} not found`);
-    }
-
-    const metadata = (task.metadata || {}) as { lastPageId?: string }
-
-    await instagramService.everyPosts({
-      limit: 10,
-      next: metadata?.lastPageId ?? undefined
-    }, {
-      onPosts: async (posts) => prisma.content.createMany({
-        skipDuplicates: true,
-        data: posts.map((post) => ({
-          userId,
-          externalId: post.id,
-          externalCreatedAt: new Date(post.timestamp),
-          title: post.caption || 'No title',
-          imageUrl: post.media_url,
-          platform: PlatformEnum.META,
-          metadata: {
-            type: 'instagram',
-            shortcode: post.shortcode
-          }
-        })) as Prisma.ContentCreateManyInput[]
-      }),
-      onNextPage: async (nextPageId) => prisma.task.update({
-        where: {
-          id: taskId
-        },
-        data: {
-          metadata: {
-            ...metadata,
-            lastPageId: nextPageId
-          }
-        }
-      })
-    })
-  }
 }

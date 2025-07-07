@@ -4,6 +4,7 @@ import type { WebSocketPayload } from "@smart-moderation-ai/api"
 import { api } from "@/lib/instances/api";
 import { EdenWS } from "@elysiajs/eden/treaty";
 import { useEffect, useRef, useState } from "react";
+import { Treaty } from "@elysiajs/eden";
 
 type WebSocket = EdenWS<{
   body: unknown;
@@ -26,15 +27,12 @@ export function useSocket() {
       return; // Prevent re-initialization if already set
     }
 
-    const subscription = api.ws.subscribe({
-      headers: {
-        coucou: 'coucou'
-      }
-    })
+    const subscription = api.ws.subscribe()
 
-    subscription.on('open', () => setIsOpen(true))
-    subscription.on('message', (event) => {
-      const payload = event.data as WebSocketPayload
+    const handleOpen = () => setIsOpen(true)
+
+    const handleMessage = (event: Treaty.OnMessage) => {
+      const payload = event.data as WebSocketPayload;
       if (!payload || !('event' in payload) || !('data' in payload)) {
         console.error("Invalid WebSocket message format:", payload);
         return;
@@ -45,16 +43,31 @@ export function useSocket() {
       } else {
         console.warn(`No listeners found for event: ${payload.event}`);
       }
-    })
+    }
 
-    subscription.on('error', (event) => {
+    const handleError = (event: Event) => {
       setIsError(true)
       console.error("WebSocket error:", event);
-    })
+    }
+
+    subscription.on('open', handleOpen)
+    subscription.on('message', handleMessage)
+    subscription.on('error', handleError)
 
     subscriptionRef.current = subscription;
     return () => {
-      subscription.close()
+
+      if (subscriptionRef.current?.ws.readyState === 1) {
+        console.log("Closing WebSocket connection");
+        subscriptionRef.current?.ws.close();
+      }
+
+      console.log("Cleaning up WebSocket subscription");
+      subscriptionRef.current?.ws.removeEventListener('error', handleError)
+      subscriptionRef.current?.ws.removeEventListener('open', handleOpen)
+      subscriptionRef.current?.ws.removeEventListener('message', handleMessage as any)
+
+      subscriptionRef.current = null;
     }
   }, [])
 

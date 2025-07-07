@@ -67,8 +67,6 @@ export default async function ContentsPage() {
 
   const { data } = await api.contents.get()
 
-  // console.log(data)
-
   return (
     <div className="flex-1 space-y-6 p-6">
       {/* Header avec titre et actions */}

@@ -1,10 +1,11 @@
 'use client';
 
-import { ACCESS_TOKEN_KEY } from "../constants/local-storage";
+import { SESSION_COOKIE_NAME } from "@smart-moderation-ai/shared"
+import { getCookies } from "./getCookies.client";
 
 export function getAccessToken() {
   if (typeof window === "undefined") {
     return null
   }
-  return localStorage.getItem(ACCESS_TOKEN_KEY) || null
+  return getCookies(SESSION_COOKIE_NAME)
 }
