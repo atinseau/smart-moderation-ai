@@ -12,27 +12,40 @@ type ContentCardProps = {
   content: Content
 }
 
+
+// function getPlatformColor(platform: PlatformEnum) {
+//   switch (platform) {
+//     case "INSTAGRAM":
+//       return "bg-gradient-to-r from-purple-500 to-pink-500"
+//     case "TWITTER":
+//       return "bg-blue-500"
+//     case "FACEBOOK":
+//       return "bg-blue-600"
+//     case "YOUTUBE":
+//       return "bg-red-500"
+//     case "LINKEDIN":
+//       return "bg-blue-700"
+//     default:
+//       return "bg-gray-500"
+//   }
+// }
+
 export function ContentCard({ content }: ContentCardProps) {
-  return <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-    <CardHeader className="pb-3">
+  return <Card className="overflow-hidden hover:shadow-lg transition-shadow gap-4 py-4">
+    <CardHeader className="gap-0">
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={"/placeholder.svg"} alt={"content.user.name"} />
-            <AvatarFallback>CD</AvatarFallback>
-          </Avatar>
-          <div>
-            <p className="text-sm font-medium">{"content.user.name"}</p>
-            <p className="text-xs text-muted-foreground">
-              il y a plus d’un an
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-col gap-2">
+
           <Badge variant="secondary" className={`text-white bg-gradient-to-r from-purple-500 to-pink-500`}>
             <ContentCardIcon content={content} />
             <span className="ml-1 text-xs">{getPlatformTitle(content)}</span>
           </Badge>
+          <p className="text-xs text-muted-foreground">
+            il y a plus d’un an
+          </p>
+        </div>
+        <div className="flex items-center space-x-2">
+
           <Button variant="ghost" size="sm">
             <MoreVertical className="h-4 w-4" />
           </Button>
@@ -40,7 +53,7 @@ export function ContentCard({ content }: ContentCardProps) {
       </div>
     </CardHeader>
 
-    <CardContent className="pb-3">
+    <CardContent>
       {content.imageUrl ? <div className="mb-3 rounded-lg overflow-hidden">
         <Image
           src={content.imageUrl}
@@ -53,7 +66,7 @@ export function ContentCard({ content }: ContentCardProps) {
       <p className="text-sm text-gray-700 line-clamp-3">{content.title}</p>
     </CardContent>
 
-    <CardFooter className="pt-3 border-t">
+    <CardFooter className="pt-4! border-t">
       <div className="flex items-center justify-between w-full text-xs text-muted-foreground">
         <div className="flex items-center space-x-4">
           <span>❤️ 1000</span>

@@ -3,27 +3,31 @@
 import { Spinner } from "@/components/Spinner";
 import { useSocket } from "@/hooks/use-socket";
 import { Task } from "@smart-moderation-ai/db"
-import { useEffect, useState } from "react";
+import { WebSocketEventEnum } from "@smart-moderation-ai/shared";
+import { useEffect, useMemo, useState } from "react";
 
 type DisplayContentInProgressTasksProps = {
   tasks: Task[]
 }
 
 export function DisplayContentInProgressTasks({ tasks }: DisplayContentInProgressTasksProps) {
-
-  const { isOpen, emit, once, on } = useSocket()
-  const [isLoading, setIsLoading] = useState(tasks.length > 0)
+  const { isOpen, on } = useSocket()
+  const [completedTaskIds, setCompletedTaskIds] = useState<string[]>([])
 
   useEffect(() => {
     if (!isOpen) {
       return
     }
 
-    on("coucou", () => {
-      console.log('message')
+    on(WebSocketEventEnum.HYDRATION_TASK_COMPLETED, ({ taskId }) => {
+      console.log("Task completed:", taskId)
+      setCompletedTaskIds((prev) => [...prev, taskId])
     })
-
   }, [isOpen])
+
+  const isLoading = useMemo(() => {
+    return tasks.filter(task => completedTaskIds.includes(task.id) === false).length > 0
+  }, [tasks, completedTaskIds])
 
   if (isLoading) {
     return <Spinner className="text-muted-foreground mt-2" label="Content is being processed..." />

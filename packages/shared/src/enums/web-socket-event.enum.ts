@@ -1,0 +1,5 @@
+
+
+export enum WebSocketEventEnum {
+  HYDRATION_TASK_COMPLETED = 'HYDRATION_TASK_COMPLETED',
+}

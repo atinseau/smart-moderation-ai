@@ -5,15 +5,15 @@ type StatisticCardProps = {
   title: string;
   value: number;
   className?: string;
-  children: React.ReactNode;
+  icon: React.ReactNode;
 }
 
-export function StatisticCard({ title, value, children, className }: StatisticCardProps) {
+export function StatisticCard({ title, value, icon, className }: StatisticCardProps) {
   return <Card>
     <CardContent className="px-6">
       <div className="flex items-center space-x-2">
         <div className={cn(className, "p-2 rounded-lg")}>
-          {children}
+          {icon}
         </div>
         <div>
           <p className="text-sm font-medium text-muted-foreground">{title}</p>

@@ -46,22 +46,6 @@ interface Content {
 }
 
 
-// function getPlatformColor(platform: PlatformEnum) {
-//   switch (platform) {
-//     case "INSTAGRAM":
-//       return "bg-gradient-to-r from-purple-500 to-pink-500"
-//     case "TWITTER":
-//       return "bg-blue-500"
-//     case "FACEBOOK":
-//       return "bg-blue-600"
-//     case "YOUTUBE":
-//       return "bg-red-500"
-//     case "LINKEDIN":
-//       return "bg-blue-700"
-//     default:
-//       return "bg-gray-500"
-//   }
-// }
 
 export default async function ContentsPage() {
 
@@ -122,17 +106,16 @@ export default async function ContentsPage() {
           title="Total contents"
           className="bg-blue-100"
           value={10}
-        >
-          <RssIcon className="size-4 text-blue-600" />
-        </StatisticCard>
+          icon={<RssIcon className="size-4 text-blue-600" />}
+        />
       </div>
 
       {/* Grille de contenus */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {/* {data?.contents.map((content) => <ContentCard
+        {data?.contents.map((content) => <ContentCard
           key={content.id}
           content={content}
-        />)} */}
+        />)}
       </div>
 
       {/* Pagination */}

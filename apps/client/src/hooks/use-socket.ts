@@ -1,115 +1,139 @@
 'use client';
 
 import type { WebSocketPayload } from "@smart-moderation-ai/api"
-import { api } from "@/lib/instances/api";
-import { EdenWS } from "@elysiajs/eden/treaty";
-import { useEffect, useRef, useState } from "react";
-import { Treaty } from "@elysiajs/eden";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-type WebSocket = EdenWS<{
-  body: unknown;
-  params: {};
-  query: unknown;
-  headers: unknown;
-  response: unknown;
-}>
+let referenceCount = 0
+let ws: WebSocket | null = null
 
 export function useSocket() {
-  const subscriptionRef = useRef<WebSocket>(null)
-  const listenersRef = useRef<Map<string, Set<(data: any) => void>>>(new Map())
-
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(ws && ws.readyState === WebSocket.OPEN)
   const [isError, setIsError] = useState(false)
+  const listenersMapRef = useRef<Map<string, Set<(data: any) => void>>>(new Map())
 
-  useEffect(() => {
-    if (subscriptionRef.current) {
-      console.warn("WebSocket subscription already exists. Reusing the existing subscription.");
-      return; // Prevent re-initialization if already set
+  const isMountedRef = useRef(false)
+
+  const handleOpen = useCallback(() => setIsOpen(true), [])
+
+  const handleMessage = useCallback((event: MessageEvent<string>) => {
+    const payload = JSON.parse(event.data) as WebSocketPayload;
+    if (!payload || !('event' in payload) || !('data' in payload)) {
+      console.error("Invalid WebSocket message format:", payload);
+      return;
     }
-
-    const subscription = api.ws.subscribe()
-
-    const handleOpen = () => setIsOpen(true)
-
-    const handleMessage = (event: Treaty.OnMessage) => {
-      const payload = event.data as WebSocketPayload;
-      if (!payload || !('event' in payload) || !('data' in payload)) {
-        console.error("Invalid WebSocket message format:", payload);
-        return;
-      }
-      const listeners = listenersRef.current.get(payload.event);
-      if (listeners) {
-        listeners.forEach((callback) => callback(payload.data));
-      } else {
-        console.warn(`No listeners found for event: ${payload.event}`);
-      }
-    }
-
-    const handleError = (event: Event) => {
-      setIsError(true)
-      console.error("WebSocket error:", event);
-    }
-
-    subscription.on('open', handleOpen)
-    subscription.on('message', handleMessage)
-    subscription.on('error', handleError)
-
-    subscriptionRef.current = subscription;
-    return () => {
-
-      if (subscriptionRef.current?.ws.readyState === 1) {
-        console.log("Closing WebSocket connection");
-        subscriptionRef.current?.ws.close();
-      }
-
-      console.log("Cleaning up WebSocket subscription");
-      subscriptionRef.current?.ws.removeEventListener('error', handleError)
-      subscriptionRef.current?.ws.removeEventListener('open', handleOpen)
-      subscriptionRef.current?.ws.removeEventListener('message', handleMessage as any)
-
-      subscriptionRef.current = null;
+    const listeners = listenersMapRef.current.get(payload.event);
+    if (listeners) {
+      listeners.forEach((callback) => callback(payload.data));
+    } else {
+      console.warn(`No listeners found for event: ${payload.event}`);
     }
   }, [])
 
+  const handleError = useCallback((event: Event) => {
+    setIsError(true)
+    console.error("WebSocket error:", event);
+  }, [])
+
+
   const emit = (event: string, data: unknown) => {
-    if (!subscriptionRef.current || !isOpen) {
+    if (!ws || !isOpen) {
       console.error("WebSocket is not initialized or is not open.");
       return;
     }
 
-    subscriptionRef.current.send({
+    ws.send(JSON.stringify({
       event,
       data
-    });
+    }));
   }
 
-  const on = <T = any>(event: string, callback: (data: T) => void) => {
-    const listeners = listenersRef.current.get(event) || new Set();
+  const on = useCallback(<T = any>(event: string, callback: (data: T) => void) => {
+    const listeners = listenersMapRef.current.get(event) || new Set();
+    if (listeners.has(callback)) {
+      console.warn(`Callback for event "${event}" is already registered.`);
+      return;
+    }
     listeners.add(callback);
-    listenersRef.current.set(event, listeners);
-  }
+    listenersMapRef.current.set(event, listeners);
+  }, [])
 
-  const once = <T = any>(event: string, callback: (data: T) => void) => {
+  const once = useCallback(<T = any>(event: string, callback: (data: T) => void) => {
     const wrappedCallback = (data: any) => {
       callback(data);
       off(event, wrappedCallback);
     };
     on(event, wrappedCallback);
-  }
+  }, [])
 
-  const off = <T = any>(event: string, callback?: (data: T) => void) => {
-    const listeners = listenersRef.current.get(event);
+  const off = useCallback(<T = any>(event: string, callback?: (data: T) => void) => {
+    const listeners = listenersMapRef.current.get(event);
     if (listeners) {
       if (callback) {
         listeners.delete(callback);
         return
       }
       listeners.clear();
-      listenersRef.current.delete(event);
+      listenersMapRef.current.delete(event);
       return
     }
     console.warn(`No listeners found for event: ${event}`);
-  }
+  }, [])
+
+
+  useEffect(() => {
+    if (isMountedRef.current) {
+      console.warn("useSocket has already been initialized. Skipping re-initialization.");
+      return; // Prevent re-initialization if already mounted
+    }
+
+    if (!ws && referenceCount <= 0) {
+      console.log("Creating new WebSocket connection", ws, referenceCount);
+      ws = new WebSocket("ws://localhost:8080/ws")
+    }
+
+    if (!ws) {
+      console.error("WebSocket is not initialized. Cannot attach event listeners.");
+      return; // Prevent attaching listeners if WebSocket is not initialized
+    }
+
+    // Attach event of this hook instance to the WebSocket
+    ws.addEventListener('open', handleOpen)
+    ws.addEventListener('message', handleMessage)
+    ws.addEventListener('error', handleError)
+
+    referenceCount += 1;
+    isMountedRef.current = true;
+  }, [])
+
+  useEffect(() => {
+    // If the WebSocket is not initialized or not open, do nothing
+    if (!ws || !isOpen) {
+      return
+    }
+
+    return () => {
+      console.log("Cleaning up WebSocket subscription", ws, referenceCount);
+      if (!ws) {
+        console.warn("No WebSocket subscription to clean up.");
+        return;
+      }
+
+      // Remove event listeners of this hook instance from the WebSocket
+      ws.removeEventListener('error', handleError)
+      ws.removeEventListener('open', handleOpen)
+      ws.removeEventListener('message', handleMessage)
+
+      // Decrement the reference count
+      referenceCount -= 1;
+
+      // If reference count is zero, close the WebSocket and clean up
+      if (referenceCount <= 0 && ws.readyState === WebSocket.OPEN) {
+        console.log("Closing WebSocket connection");
+        ws.close();
+        ws = null; // Clear the WebSocket reference
+      }
+    }
+  }, [isOpen])
 
   return {
     isOpen,
