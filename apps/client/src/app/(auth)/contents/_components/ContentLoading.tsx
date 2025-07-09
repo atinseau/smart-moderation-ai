@@ -6,11 +6,11 @@ import { Task } from "@smart-moderation-ai/db"
 import { WebSocketEventEnum } from "@smart-moderation-ai/shared";
 import { useEffect, useMemo, useState } from "react";
 
-type DisplayContentInProgressTasksProps = {
+type ContentLoadingProps = {
   tasks: Task[]
 }
 
-export function DisplayContentInProgressTasks({ tasks }: DisplayContentInProgressTasksProps) {
+export function ContentLoading({ tasks }: ContentLoadingProps) {
   const { isOpen, on } = useSocket()
   const [completedTaskIds, setCompletedTaskIds] = useState<string[]>([])
 

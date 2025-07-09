@@ -1,51 +1,13 @@
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
-  Search,
-  Filter,
-  Calendar,
-  ExternalLink,
-  MoreVertical,
-  Instagram,
-  Twitter,
-  Facebook,
-  Youtube,
-  Linkedin,
   RssIcon,
 } from "lucide-react"
 
-import Image from "next/image"
-import { StatisticCard } from "@/components/Cards/StatisticCard"
 import { ContentCard } from "@/components/Cards/ContentCard/ContentCard"
 import { api } from "@/lib/instances/api"
-import { DisplayContentInProgressTasks } from "./_components/DisplayContentInProgressTasks"
-
-// Types basés sur votre modèle Prisma
-type PlatformEnum = "INSTAGRAM" | "TWITTER" | "FACEBOOK" | "YOUTUBE" | "LINKEDIN" | "TIKTOK"
-
-interface Content {
-  id: string
-  userId: string
-  user: {
-    id: string
-    name: string
-    image?: string
-  }
-  externalId: string
-  externalCreatedAt: Date
-  metadata: any
-  imageUrl?: string
-  title: string
-  platform: PlatformEnum
-  createdAt: Date
-  updatedAt: Date
-}
-
-
+import { StatisticList } from "@/components/StatisticList/StatisticList"
+import { ContentPageHeader } from "./_components/ContentPageHeader"
+import { ContentPageFilters } from "./_components/ContentPageFilters"
 
 export default async function ContentsPage() {
 
@@ -54,61 +16,52 @@ export default async function ContentsPage() {
   return (
     <div className="flex-1 space-y-6 p-6">
       {/* Header avec titre et actions */}
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Contents</h1>
-          <p className="text-muted-foreground">Gérez tous vos contenus de réseaux sociaux en un seul endroit</p>
-          <DisplayContentInProgressTasks tasks={data?.tasks || []} />
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm">
-            <Filter className="h-4 w-4 mr-2" />
-            Filtres
-          </Button>
-          <Button size="sm">Activer la modération intelligente</Button>
-        </div>
-      </div>
+      <ContentPageHeader tasks={data?.tasks || []} />
 
       {/* Barre de recherche et filtres */}
-      <div className="flex items-center space-x-4">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input placeholder="Rechercher dans les contenus..." className="pl-10" />
-        </div>
-        {/* <Select defaultValue="all">
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Plateforme" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Toutes les plateformes</SelectItem>
-            <SelectItem value="instagram">Instagram</SelectItem>
-            <SelectItem value="twitter">Twitter</SelectItem>
-            <SelectItem value="facebook">Facebook</SelectItem>
-            <SelectItem value="youtube">YouTube</SelectItem>
-            <SelectItem value="linkedin">LinkedIn</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select defaultValue="recent">
-          <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="Trier par" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="recent">Plus récent</SelectItem>
-            <SelectItem value="oldest">Plus ancien</SelectItem>
-            <SelectItem value="platform">Plateforme</SelectItem>
-          </SelectContent>
-        </Select> */}
-      </div>
+      <ContentPageFilters />
 
       {/* Statistiques rapides */}
-      <div className="grid gap-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
-        <StatisticCard
-          title="Total contents"
-          className="bg-blue-100"
-          value={10}
-          icon={<RssIcon className="size-4 text-blue-600" />}
-        />
-      </div>
+      <StatisticList
+        statistics={[
+          {
+            title: "Total contents",
+            className: "bg-blue-100",
+            value: 10,
+            icon: <RssIcon className="size-4 text-blue-600" />,
+          },
+          {
+            title: "Total contents",
+            className: "bg-blue-100",
+            value: 10,
+            icon: <RssIcon className="size-4 text-blue-600" />,
+          },
+          {
+            title: "Total contents",
+            className: "bg-blue-100",
+            value: 10,
+            icon: <RssIcon className="size-4 text-blue-600" />,
+          },
+          {
+            title: "Total contents",
+            className: "bg-blue-100",
+            value: 10,
+            icon: <RssIcon className="size-4 text-blue-600" />,
+          },
+          {
+            title: "Total contents",
+            className: "bg-blue-100",
+            value: 10,
+            icon: <RssIcon className="size-4 text-blue-600" />,
+          },
+          {
+            title: "Total contents",
+            className: "bg-blue-100",
+            value: 10,
+            icon: <RssIcon className="size-4 text-blue-600" />,
+          }
+        ]}
+      />
 
       {/* Grille de contenus */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

@@ -1,7 +1,7 @@
 import { Card, CardContent } from "../ui/card";
 import { cn } from "@/lib/utils";
 
-type StatisticCardProps = {
+export type StatisticCardProps = {
   title: string;
   value: number;
   className?: string;
