@@ -1,17 +1,26 @@
-import { Button } from "@/components/ui/button"
 import {
+  Blocks,
   RssIcon,
+  Scale,
 } from "lucide-react"
 
-import { ContentCard } from "@/components/Cards/ContentCard/ContentCard"
 import { api } from "@/lib/instances/api"
 import { StatisticList } from "@/components/StatisticList/StatisticList"
 import { ContentPageHeader } from "./_components/ContentPageHeader"
-import { ContentPageFilters } from "./_components/ContentPageFilters"
+import { ContentPageSearch } from "./_components/ContentPageSearch"
+import { Contents } from "./_components/Contents"
 
 export default async function ContentsPage() {
 
   const { data } = await api.contents.get()
+
+  const detectedPlatforms = (data?.contents || []).reduce((acc, content) => {
+    if (acc.includes(content.platform)) {
+      return acc
+    }
+    acc.push(content.platform)
+    return acc
+  }, [] as string[])
 
   return (
     <div className="flex-1 space-y-6 p-6">
@@ -19,76 +28,33 @@ export default async function ContentsPage() {
       <ContentPageHeader tasks={data?.tasks || []} />
 
       {/* Barre de recherche et filtres */}
-      <ContentPageFilters />
+      <ContentPageSearch />
 
       {/* Statistiques rapides */}
       <StatisticList
         statistics={[
           {
-            title: "Total contents",
-            className: "bg-blue-100",
-            value: 10,
-            icon: <RssIcon className="size-4 text-blue-600" />,
+            title: "Contenu modéré",
+            className: "bg-purple-100",
+            value: 5,
+            icon: <Scale className="size-4 text-purple-600" />
           },
           {
             title: "Total contents",
             className: "bg-blue-100",
-            value: 10,
+            value: data?.contents?.length || 0,
             icon: <RssIcon className="size-4 text-blue-600" />,
           },
           {
-            title: "Total contents",
-            className: "bg-blue-100",
-            value: 10,
-            icon: <RssIcon className="size-4 text-blue-600" />,
-          },
-          {
-            title: "Total contents",
-            className: "bg-blue-100",
-            value: 10,
-            icon: <RssIcon className="size-4 text-blue-600" />,
-          },
-          {
-            title: "Total contents",
-            className: "bg-blue-100",
-            value: 10,
-            icon: <RssIcon className="size-4 text-blue-600" />,
-          },
-          {
-            title: "Total contents",
-            className: "bg-blue-100",
-            value: 10,
-            icon: <RssIcon className="size-4 text-blue-600" />,
+            title: "Connected platforms",
+            className: "bg-red-100",
+            icon: <Blocks className="size-4 text-red-600" />,
+            value: detectedPlatforms.length
           }
         ]}
       />
 
-      {/* Grille de contenus */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {data?.contents.map((content) => <ContentCard
-          key={content.id}
-          content={content}
-        />)}
-      </div>
-
-      {/* Pagination */}
-      <div className="flex items-center justify-center space-x-2 pt-4">
-        <Button variant="outline" size="sm" disabled>
-          Précédent
-        </Button>
-        <Button variant="outline" size="sm" className="bg-primary text-primary-foreground">
-          1
-        </Button>
-        <Button variant="outline" size="sm">
-          2
-        </Button>
-        <Button variant="outline" size="sm">
-          3
-        </Button>
-        <Button variant="outline" size="sm">
-          Suivant
-        </Button>
-      </div>
+      <Contents defaultData={data?.contents || []} />
     </div>
   )
 }

@@ -8,7 +8,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   cookies: {
     sessionToken: {
-      name: SESSION_COOKIE_NAME
+      name: SESSION_COOKIE_NAME,
+      options: {
+        httpOnly: false
+      }
     }
   },
   session: {

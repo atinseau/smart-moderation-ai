@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
 
-export function ContentPageFilters() {
+export function ContentPageSearch() {
 
   return <div className="flex items-center space-x-4">
     <div className="relative flex-1 max-w-sm">

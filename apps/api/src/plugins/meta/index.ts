@@ -15,3 +15,9 @@ export default new Elysia({ prefix: "/meta", name: "metaPlugin" })
   }, {
     body: metaConnectionCreateRequestDto
   })
+  .delete('/connection', async ({ user }) => {
+    await MetaConnectionService.deleteConnection(user)
+    return {
+      message: 'Meta connection successfully deleted'
+    }
+  })

@@ -11,6 +11,8 @@ export default function Home() {
       const searchParams = new URLSearchParams(window.location.hash)
       const metaToken = searchParams.get('#access_token')
 
+      postMessage("DEBUG", { metaToken, searchParams: Object.fromEntries(searchParams.entries()) })
+
       if (!metaToken) {
         postMessage(META_CONNECTION_FAILURE, { message: "No meta token" })
         return
@@ -18,7 +20,7 @@ export default function Home() {
 
       const { data, error } = await api.meta.connection.post({ token: metaToken })
       if (error) {
-        postMessage(META_CONNECTION_FAILURE, { message: error.value.message || "Unknown error" })
+        postMessage(META_CONNECTION_FAILURE, { message: error.value || "Unknown error" })
         return
       }
       postMessage(META_CONNECTION_SUCCESS, data)

@@ -10,8 +10,16 @@ export const api = treaty<Application>(process.env.NEXT_PUBLIC_API_URL, {
       ? getClientAccessToken()
       : await getServerAccessToken()
 
+    if (typeof window !== "undefined") {
+      console.log({
+        'Cookie': `${SESSION_COOKIE_NAME}=${token}`
+      })
+    }
+
     return {
+      credentials: "include",
       headers: {
+        "X-Salut": "Hello from Elysia",
         'Cookie': `${SESSION_COOKIE_NAME}=${token}`
       }
     }
