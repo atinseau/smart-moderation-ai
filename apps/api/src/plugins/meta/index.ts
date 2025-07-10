@@ -2,8 +2,6 @@ import Elysia from "elysia";
 import { metaConnectionCreateRequestDto } from "./dtos/meta-connection-create-request.dto";
 import { MetaConnectionService } from "./services/meta-connection.service";
 import authPlugin from "../auth";
-import { InstagramService } from "./services/instagram.service";
-import { PlatformService } from "../platform/services/platform.service";
 
 export default new Elysia({ prefix: "/meta", name: "metaPlugin" })
   .use(authPlugin)

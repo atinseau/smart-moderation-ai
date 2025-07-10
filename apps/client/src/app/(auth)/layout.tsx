@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { AppSidebar } from "@/components/AppSidebar";
+import { AppSidebar } from "@/components/AppSidebar/AppSidebar";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { getAccessToken } from "@/lib/functions/getAccessToken.server";

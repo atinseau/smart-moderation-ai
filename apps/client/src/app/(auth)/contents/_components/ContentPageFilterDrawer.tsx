@@ -12,10 +12,11 @@ export function ContentPageFilterDrawer(props: ContentPageFilterDrawerProps) {
     onOpenChange={props.setIsOpen}
   >
     <DrawerContent>
+      <DrawerHeader>
+        <DrawerTitle>Filter Content Pages</DrawerTitle>
+      </DrawerHeader>
       <DrawerFooter>
-        <DrawerClose>
-          <Button variant="outline">Cancel</Button>
-        </DrawerClose>
+        <DrawerClose>Cancel</DrawerClose>
       </DrawerFooter>
     </DrawerContent>
   </Drawer>

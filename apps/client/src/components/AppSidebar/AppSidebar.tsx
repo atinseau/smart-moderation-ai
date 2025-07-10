@@ -13,6 +13,7 @@ import {
 
 import { GalleryVerticalEnd, Home, PlugZap, RssIcon } from "lucide-react"
 import Link from "next/link"
+import { AppSidebarMenuButton } from "./AppSidebarMenuButton"
 
 // Menu items.
 const items = [
@@ -57,16 +58,11 @@ export function AppSidebar() {
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {items.map((item, index) => <AppSidebarMenuButton
+                {...item}
+                key={index}
+                icon={<item.icon />}
+              />)}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

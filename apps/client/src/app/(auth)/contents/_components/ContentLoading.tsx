@@ -14,6 +14,10 @@ export function ContentLoading({ tasks }: ContentLoadingProps) {
   const { isOpen, on } = useSocket()
   const [completedTaskIds, setCompletedTaskIds] = useState<string[]>([])
 
+  const isLoading = useMemo(() => {
+    return tasks.filter(task => completedTaskIds.includes(task.id) === false).length > 0
+  }, [tasks, completedTaskIds])
+
   useEffect(() => {
     if (!isOpen) {
       return
@@ -24,10 +28,6 @@ export function ContentLoading({ tasks }: ContentLoadingProps) {
       setCompletedTaskIds((prev) => [...prev, taskId])
     })
   }, [isOpen])
-
-  const isLoading = useMemo(() => {
-    return tasks.filter(task => completedTaskIds.includes(task.id) === false).length > 0
-  }, [tasks, completedTaskIds])
 
   if (isLoading) {
     return <Spinner className="text-muted-foreground mt-2" label="Content is being processed..." />

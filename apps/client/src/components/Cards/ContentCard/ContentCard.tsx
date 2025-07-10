@@ -1,4 +1,4 @@
-import { ExternalLink, MoreHorizontal, Heart, MessageCircle, Eye } from "lucide-react";
+import { ExternalLink, Heart, MessageCircle, Eye } from "lucide-react";
 import { Badge } from "../../ui/badge";
 import { Card, CardContent, CardFooter, CardHeader } from "../../ui/card";
 import Image from "next/image";
@@ -9,9 +9,11 @@ import { ContentCardReaction } from "./ContentCardReaction";
 import { ContentCardActionButton } from "./ContentCardActionButton";
 import Link from "next/link";
 import { useMemo } from "react";
+import { ContentCardHeaderDropdown } from "./ContentCardHeaderDropdown";
 
 type ContentCardProps = {
   content: Content
+  onDelete?: (content: Content) => void
 }
 
 // function getPlatformColor(platform: PlatformEnum) {
@@ -31,7 +33,7 @@ type ContentCardProps = {
 //   }
 // }
 
-export function ContentCard({ content }: ContentCardProps) {
+export function ContentCard({ content, onDelete }: ContentCardProps) {
 
   const platformUrl = useMemo(() => {
     const metadata = typeof content.metadata === "object" && !Array.isArray(content.metadata) && content.metadata ? content.metadata : {};
@@ -50,7 +52,7 @@ export function ContentCard({ content }: ContentCardProps) {
             <ContentCardIcon content={content} />
             <span className="ml-1 text-xs">{getPlatformTitle(content)}</span>
           </Badge>
-          <ContentCardActionButton icon={MoreHorizontal} />
+          <ContentCardHeaderDropdown onDelete={() => onDelete?.(content)} />
         </div>
         <p className="text-xs text-muted-foreground">
           il y a plus d’un an

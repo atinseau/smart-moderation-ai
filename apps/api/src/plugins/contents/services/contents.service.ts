@@ -1,5 +1,7 @@
 import { prisma, PlatformConnection, Task, TaskStatus, TaskType } from "@smart-moderation-ai/db";
 import { PlatformService } from "../../platform/services/platform.service";
+import { MetaService } from "../../meta/services/meta.service";
+import { PlatformActionService } from "../../platform/services/platform-action.service";
 
 export abstract class ContentsService {
 
@@ -40,7 +42,11 @@ export abstract class ContentsService {
           }))
         }
       }
-      return tx.content.findMany()
+      return tx.content.findMany({
+        where: {
+          userId
+        }
+      })
     })
 
     console.log(`Content fetching took ${performance.now() - now}ms`)
@@ -48,6 +54,29 @@ export abstract class ContentsService {
     return {
       tasks: tasks.filter((task) => task.status !== "COMPLETED"),
       contents
+    }
+  }
+
+  static async deleteContent(userId: string, contentId: string) {
+    try {
+      const content = await prisma.content.findFirst({
+        where: {
+          userId,
+          id: contentId
+        }
+      })
+      if (!content) {
+        throw new Error("Content not found");
+      }
+      await PlatformActionService.deletePlatformContent(userId, content.platform, content.externalId)
+      await prisma.content.delete({
+        where: {
+          id: contentId
+        }
+      })
+    } catch (error) {
+      console.error("Error deleting content:", error);
+      throw new Error("Failed to delete content");
     }
   }
 

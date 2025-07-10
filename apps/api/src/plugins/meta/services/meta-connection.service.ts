@@ -22,6 +22,7 @@ export abstract class MetaConnectionService {
       prisma.platformConnection.deleteMany({
         where: {
           platform: PlatformEnum.META,
+          userId: user.id
         }
       }),
       prisma.platformConnection.create({
