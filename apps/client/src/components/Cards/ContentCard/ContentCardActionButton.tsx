@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { createElement } from "react";
+import { createElement, MouseEventHandler } from "react";
 
 type ContentCardActionButtonProps = {
   icon: React.FunctionComponent<{ className?: string }>
   className?: string
-  onClick?: () => void
+  onClick?: MouseEventHandler<HTMLButtonElement>
   ref?: React.Ref<HTMLButtonElement>
 }
 

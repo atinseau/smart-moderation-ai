@@ -10,6 +10,7 @@ import platformPlugin from "./plugins/platform";
 import contentsPlugin from "./plugins/contents";
 import cronPlugin from "./plugins/cron"
 import wsPlugin from "./plugins/ws"
+import moderationPlugin from "./plugins/moderation";
 
 export const app = new Elysia()
   .use(cors())
@@ -23,6 +24,7 @@ export const app = new Elysia()
   .use(contentsPlugin)
   .use(userPlugin)
   .use(platformPlugin)
+  .use(moderationPlugin)
   .listen(Bun.env.PORT);
 
 console.log(

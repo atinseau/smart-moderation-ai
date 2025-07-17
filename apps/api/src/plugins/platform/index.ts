@@ -2,8 +2,8 @@ import Elysia from "elysia";
 import authPlugin from "../auth";
 import { PlatformService } from "./services/platform.service";
 
-export default new Elysia({ name: "platformPlugin" })
+export default new Elysia({ name: "platformPlugin", prefix: "/platforms" })
   .use(authPlugin)
-  .get('/platforms', async ({ user }) => {
+  .get('/', async ({ user }) => {
     return PlatformService.getPlatforms(user.id)
   })

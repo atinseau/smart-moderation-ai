@@ -43,7 +43,11 @@ export abstract class ContentsService {
         }
       }
       return tx.content.findMany({
+        include: {
+          moderation: true
+        },
         where: {
+          deletedAt: null,
           userId
         }
       })
@@ -69,14 +73,17 @@ export abstract class ContentsService {
         throw new Error("Content not found");
       }
       await PlatformActionService.deletePlatformContent(userId, content.platform, content.externalId)
-      await prisma.content.delete({
+      await prisma.content.update({
         where: {
           id: contentId
+        },
+        data: {
+          deletedAt: new Date()
         }
       })
     } catch (error) {
-      console.error("Error deleting content:", error);
-      throw new Error("Failed to delete content");
+      console.error("Error deleting content");
+      throw error;
     }
   }
 

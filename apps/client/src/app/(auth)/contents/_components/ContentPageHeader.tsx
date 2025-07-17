@@ -7,13 +7,13 @@ import { Filter, MoreVertical } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { ContentPageFilterDrawer } from "./ContentPageFilterDrawer"
 import { useState } from "react";
+import { ContentEnablingModerationButton } from "./ContentEnablingModerationButton";
 
 type ContentPageHeaderProps = {
   tasks: Task[]
 }
 
 export function ContentPageHeader({ tasks }: ContentPageHeaderProps) {
-
   const [isOpen, setIsOpen] = useState(false)
 
   return <div className="flex items-center justify-between gap-4">
@@ -27,7 +27,7 @@ export function ContentPageHeader({ tasks }: ContentPageHeaderProps) {
         <Filter className="h-4 w-4 mr-2" />
         Filtres
       </Button>
-      <Button size="sm">Activer la modération intelligente</Button>
+      <ContentEnablingModerationButton />
     </div>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

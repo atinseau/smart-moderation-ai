@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/sonner";
 import "../styles/globals.css";
 
 export default function RootLayout({
@@ -11,6 +12,7 @@ export default function RootLayout({
       // className="dark"
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );

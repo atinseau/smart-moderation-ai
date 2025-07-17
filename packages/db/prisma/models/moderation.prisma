@@ -1,0 +1,11 @@
+model Moderation {
+  id String @id @default(cuid())
+
+  userId String
+
+  user User @relation(fields: [userId], references: [id])
+
+  contentId String @unique
+
+  content Content @relation(fields: [contentId], references: [id])
+}
